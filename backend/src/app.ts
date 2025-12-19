@@ -52,3 +52,8 @@ app.use("*", (_req: Request, res: Response) => {
 });
 
 export default app;
+
+
+app.get("/healthz", (_req, res) => {
+  res.status(200).send("OK");
+});
