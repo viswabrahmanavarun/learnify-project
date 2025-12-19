@@ -19,3 +19,14 @@ yarn-debug.log*
 
 # OS
 .DS_Store
+
+
+# Next.js build
+frontend/.next/
+frontend/out/
+
+# Turbopack / cache
+frontend/.turbo/
+
+# Logs
+*.log
