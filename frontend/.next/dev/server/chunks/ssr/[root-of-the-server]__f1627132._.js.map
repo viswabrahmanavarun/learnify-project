@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["file:///Users/varun/Desktop/internship-lms/frontend/app/page.tsx"],"sourcesContent":["// frontend/app/page.tsx\nimport { redirect } from \"next/navigation\";\n\n/**\n * Root page\n * Redirects users to login page\n */\nexport default function HomePage(): never {\n  redirect(\"/auth/login\");\n}\n"],"names":[],"mappings":"AAAA,wBAAwB;;;;;AACxB;AAAA;;AAMe,SAAS;IACtB,IAAA,iMAAQ,EAAC;AACX"}}]
+}

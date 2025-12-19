@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/**
+ * =========================
+ * USER
+ * =========================
+ */
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+
+  // ✅ NEW: mentor approval flow
+  approved  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  // =========================
+  // RELATIONS
+  // =========================
+  courses         Course[]          @relation("MentorCourses")
+  enrollments     Enrollment[]
+  certificates    Certificate[]
+  chapterProgress ChapterProgress[]
+}
+
+
+/**
+ * =========================
+ * COURSE
+ * =========================
+ */
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  mentorId    Int
+  createdAt   DateTime @default(now())
+
+  mentor       User          @relation("MentorCourses", fields: [mentorId], references: [id])
+  chapters     Chapter[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+}
+
+/**
+ * =========================
+ * CHAPTER
+ * =========================
+ */
+model Chapter {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  courseId  Int
+  createdAt DateTime @default(now())
+
+  course   Course            @relation(fields: [courseId], references: [id])
+  progress ChapterProgress[]
+}
+
+/**
+ * =========================
+ * ENROLLMENT
+ * =========================
+ */
+model Enrollment {
+  id         Int      @id @default(autoincrement())
+  studentId  Int
+  courseId   Int
+  enrolledAt DateTime @default(now())
+
+  student User   @relation(fields: [studentId], references: [id])
+  course  Course @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId])
+}
+
+/**
+ * =========================
+ * CHAPTER PROGRESS
+ * =========================
+ */
+model ChapterProgress {
+  id          Int      @id @default(autoincrement())
+  studentId   Int
+  chapterId   Int
+  completedAt DateTime @default(now())
+
+  student User    @relation(fields: [studentId], references: [id])
+  chapter Chapter @relation(fields: [chapterId], references: [id])
+
+  @@unique([studentId, chapterId])
+}
+
+/**
+ * =========================
+ * CERTIFICATE
+ * =========================
+ */
+model Certificate {
+  id            Int      @id @default(autoincrement())
+  studentId     Int
+  courseId      Int
+  issuedAt      DateTime @default(now())
+  certificateNo String   @unique @default(uuid())
+  fileUrl       String?  // PDF path (optional now)
+
+  student User   @relation(fields: [studentId], references: [id])
+  course  Course @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId])
+}
+
+
+/**
+ * =========================
+ * ENUMS
+ * =========================
+ */
+enum Role {
+  ADMIN
+  MENTOR
+  STUDENT
+}
+
